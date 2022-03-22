@@ -19,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
+import lombok.Getter;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -30,6 +31,7 @@ import com.promineotech.jeep.entity.JeepModel;
 class FetchJeepTest {
    
     @Autowired
+    @Getter
     private TestRestTemplate restTemplate;
     
     @LocalServerPort
@@ -41,7 +43,8 @@ class FetchJeepTest {
     // Given: a valid model, trim and URI
     JeepModel model = JeepModel.WRANGLER;
     String trim = "Sport";
-    String uri = String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
+    String uri = 
+        String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
     
     //When: a connection is made to the URI
     ResponseEntity<List<Jeep>> response = 
@@ -52,9 +55,11 @@ class FetchJeepTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     
     // And: the actual list returned is the same as the expected list
-    
+    List<Jeep> actual = response.getBody();
     List<Jeep> expected = buildExpected();
-    assertThat(response.getBody()).isEqualTo(expected);
+    
+    actual.forEach(jeep -> jeep.setModelPK(null));
+    assertThat(actual).isEqualTo(expected);
 
   
 
