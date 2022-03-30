@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import com.promineotech.jeep.controller.support.FetchJeepTestSupport;
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
 import lombok.Getter;
@@ -28,7 +29,7 @@ import lombok.Getter;
     "classpath:flyway/migrations/V1.1__Jeep_Data.sql"}, 
     config = @SqlConfig(encoding = "utf-8"))
 
-class FetchJeepTest {
+class FetchJeepTest extends FetchJeepTestSupport{
    
     @Autowired
     @Getter
@@ -65,26 +66,4 @@ class FetchJeepTest {
 
    
     }
-    protected List<Jeep> buildExpected() {
-      List<Jeep> list = new LinkedList<>();
-      
-      list.add(Jeep.builder()
-          .modelId(JeepModel.WRANGLER)
-          .trimLevel("Sport")
-          .numDoors(2)
-          .wheelSize(17)
-          .basePrice(new BigDecimal("28475.00"))
-          .build());
-      
-      list.add(Jeep.builder()
-          .modelId(JeepModel.WRANGLER)
-          .trimLevel("Sport")
-          .numDoors(4)
-          .wheelSize(17)
-          .basePrice(new BigDecimal("31975.00"))
-          .build());
-      
-      
-      return list;
-}
 }
